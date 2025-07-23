@@ -581,6 +581,23 @@ footer {
     }
 }
 
+.custom-popup .popup-footer + div button {
+    background-color: #fff;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    padding: 6px 10px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.custom-popup .popup-footer + div button:hover {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
 @media (max-width: 768px) {
   #chatbot-container {
     width: 90%;

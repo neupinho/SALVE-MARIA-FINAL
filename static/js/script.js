@@ -21,75 +21,58 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const shelters = [
-        {
-            coords: [-8.0489691, -34.942389],
-            title: 'Abrigo casa de isabel',
-            description: 'Atende meninas e mulheres em situação de vulnerabilidade'
-        },
-        {
-            coords: [-8.063549, -34.8904319],
-            title: 'Abrigo casa menina mulher',
-            description: 'Atende meninas e mulheres em situação de vulnerabilidade'
-        },
-        {
-            coords: [-8.0924377, -34.9321112],
-            title: 'SER- Centro de Referência Clarice Lispector',
-            description: 'Atende meninas e mulheres em situação de vulnerabilidade'
-        }
+        { coords: [-8.0489691, -34.942389], title: 'Abrigo casa de isabel', description: 'Atende meninas e mulheres em situação de vulnerabilidade' },
+        { coords: [-8.063549, -34.8904319], title: 'Abrigo casa menina mulher', description: 'Atende meninas e mulheres em situação de vulnerabilidade' },
+        { coords: [-8.0924377, -34.9321112], title: 'SER- Centro de Referência Clarice Lispector', description: 'Atende meninas e mulheres em situação de vulnerabilidade' }
     ];
 
     shelters.forEach(shelter => {
         L.marker(shelter.coords, {
             icon: L.divIcon({
                 className: 'custom-marker',
-                html: `<div style="background: ${markerColors.seguro}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white;"></div>`,
-                iconSize: [24, 24]
+                html: `<div style="background:${markerColors.seguro}; width:24px; height:24px; border-radius:50%; border:3px solid white;"></div>`,
+                iconSize: [24,24]
             })
         }).addTo(map).bindPopup(`<b>${shelter.title}</b><br>${shelter.description}`);
     });
 
-    fetch("/api/reports")
-        .then(response => response.json())
-        .then(reports => {
-            reports.forEach(report => {
-                createMarker(
-                    report.lat, 
-                    report.lng, 
-                    report.type, 
-                    report.level, 
-                    report.description, 
-                    report.address
-                );
+    function loadAllReports() {
+        fetch("/api/reports")
+            .then(res => res.json())
+            .then(reports => {
+                reports.forEach(r => {
+                    createMarker(
+                        r.lat, r.lng,
+                        r.type, r.level,
+                        r.description, r.address,
+                        r.id
+                    );
+                });
             });
-        });
+    }
 
     document.getElementById('search-btn')?.addEventListener('click', handleAddressSearch);
-
     map.on('click', handleMapClick);
-
     document.getElementById('emergency-btn')?.addEventListener('click', handleEmergency);
     document.getElementById('police-btn')?.addEventListener('click', handlePolice);
     document.getElementById('shelter-btn')?.addEventListener('click', handleShelter);
 
     addCustomStyles();
-
     initChatbot();
+    loadAllReports();
 
     function handleAddressSearch() {
         const address = document.getElementById('address-input').value;
         if (!address) return;
-
         fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 if (data.length > 0) {
                     const { lat, lon } = data[0];
                     map.setView([lat, lon], 16);
                     map.closePopup();
                     createReportForm(lat, lon, address);
-                } else {
-                    alert("Endereço não encontrado!");
-                }
+                } else alert("Endereço não encontrado!");
             })
             .catch(() => alert("Erro ao buscar endereço. Tente novamente."));
     }
@@ -125,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <button type="submit">Enviar</button>
         `;
-        
+
         const popup = L.popup()
             .setLatLng([lat, lng])
             .setContent(form)
@@ -133,56 +116,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const occurrenceType = form.querySelector('.occurrence-type').value;
-            const dangerLevel = form.querySelector('.danger-level').value;
-            const description = form.querySelector('.danger-description').value;
-            
-            createMarker(lat, lng, occurrenceType, dangerLevel, description, address || "Local clicado no mapa");
-            saveReport(lat, lng, occurrenceType, dangerLevel, description, address || "Local clicado no mapa");
-            map.closePopup();
+            const type = form.querySelector('.occurrence-type').value;
+            const level = form.querySelector('.danger-level').value;
+            const desc = form.querySelector('.danger-description').value;
+
+            fetch("/api/reports", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    lat, lng, type, level,
+                    description: desc,
+                    address: address || "Local clicado no mapa"
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                createMarker(lat, lng, type, level, desc, address || "Local clicado no mapa", data.id);
+                map.closePopup();
+            })
+            .catch(err => console.error("Erro:", err));
         });
     }
 
-    function createMarker(lat, lng, occurrenceType, dangerLevel, description, address) {
+    function createMarker(lat, lng, occurrenceType, dangerLevel, description, address, id) {
+        const popupContent = document.createElement('div');
+        popupContent.className = 'custom-popup';
+        popupContent.innerHTML = `
+            <h4 style="color:${markerColors[dangerLevel]}">${occurrenceType.toUpperCase()}</h4>
+            <p><strong>Nível:</strong> ${dangerLevel.replace('-', ' ')}</p>
+            <div class="popup-content">${description || 'Sem descrição adicional'}</div>
+            <div class="popup-footer">${new Date().toLocaleString()}</div>
+            <div style="margin-top:10px; display:flex; gap:5px;">
+                <button class="delete-btn">Excluir</button>
+                <button class="edit-btn">Editar</button>
+                <button class="comment-btn">Comentar</button>
+            </div>
+            <div class="comments-container" style="margin-top:10px; max-height:100px; overflow-y:auto; border-top:1px solid #ccc; padding-top:5px;"></div>
+        `;
+
         const marker = L.marker([lat, lng], {
             icon: L.divIcon({
                 className: 'custom-marker',
-                html: `<div style="background: ${markerColors[dangerLevel]}; 
-                       width: 24px; 
-                       height: 24px; 
-                       border-radius: 50%; 
-                       border: 3px solid white;
-                       box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>`,
-                iconSize: [24, 24]
+                html: `<div style="background:${markerColors[dangerLevel]}; width:24px; height:24px; border-radius:50%; border:3px solid white;"></div>`,
+                iconSize: [24,24]
             })
-        }).addTo(map)
-        .bindPopup(`
-            <div class="custom-popup">
-                <h4 style="color: ${markerColors[dangerLevel]}">${occurrenceType.toUpperCase()}</h4>
-                ${address ? `<p><strong>Local:</strong> ${address}</p>` : ''}
-                <p><strong>Nível:</strong> ${dangerLevel.replace('-', ' ')}</p>
-                <div class="popup-content">${description || 'Sem descrição adicional'}</div>
-                <div class="popup-footer">${new Date().toLocaleString()}</div>
-            </div>
-        `);
-    }
+        }).addTo(map).bindPopup(popupContent);
 
-    function saveReport(lat, lng, occurrenceType, dangerLevel, description, address) {
-        fetch("/api/reports", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                lat: lat,
-                lng: lng,
-                type: occurrenceType,
-                level: dangerLevel,
-                description: description,
-                address: address
+        function loadComments() {
+            fetch(`/api/reports/${id}/comments`)
+                .then(r => r.json())
+                .then(comments => {
+                    const ctn = popupContent.querySelector('.comments-container');
+                    ctn.innerHTML = comments.map(c => `<p><strong>${c.author}:</strong> ${c.content}</p>`).join('');
+                });
+        }
+        loadComments();
+
+        popupContent.querySelector('.delete-btn').addEventListener('click', () => {
+            if (confirm('Deseja realmente excluir este relatório?')) {
+                fetch(`/api/reports/${id}`, { method: 'DELETE' })
+                    .then(res => {
+                        if (res.ok) map.removeLayer(marker);
+                        else alert('Erro ao excluir.');
+                    });
+            }
+        });
+
+        popupContent.querySelector('.edit-btn').addEventListener('click', () => {
+            const newType = prompt('Novo tipo de ocorrência:', occurrenceType);
+            const newLevel = prompt('Novo nível de risco (alto-risco, cuidado):', dangerLevel);
+            const newDesc = prompt('Nova descrição:', description);
+            const newAddress = prompt('Novo endereço:', address);
+
+            if (!newType || !newLevel) return;
+
+            fetch(`/api/reports/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: newType,
+                    level: newLevel,
+                    description: newDesc,
+                    address: newAddress
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => console.log("Relatório salvo:", data))
-        .catch(error => console.error("Erro:", error));
+            .then(res => {
+                if (res.ok) {
+                    map.removeLayer(marker);
+                    createMarker(lat, lng, newType, newLevel, newDesc, newAddress, id);
+                } else alert('Erro ao editar.');
+            });
+        });
+
+        popupContent.querySelector('.comment-btn').addEventListener('click', () => {
+            const text = prompt('Digite seu comentário:');
+            if (!text) return;
+            fetch(`/api/reports/${id}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ author: 'Anônimo', content: text })
+            })
+            .then(res => {
+                if (res.ok) loadComments();
+                else alert('Erro ao comentar.');
+            });
+        });
     }
 
     function handleEmergency() {
@@ -194,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handlePolice() {
         if (confirm('Ligar para a Polícia Militar (190)?')) {
             alert('Redirecionando para chamada de emergência...');
-            window.location.href = 'tel:190'; 
+            window.location.href = 'tel:190';
         }
     }
 
@@ -216,13 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 z-index: 10;
                 animation: pulse 1.5s infinite;
             }
-            
             @keyframes pulse {
                 0% { transform: scale(1); }
                 50% { transform: scale(1.2); }
                 100% { transform: scale(1); }
             }
-            
             .custom-marker, .temp-marker {
                 display: flex;
                 justify-content: center;
@@ -240,16 +276,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const chatbotMessages = document.getElementById('chatbot-messages');
         
         const responses = {
-            "denúncia": "Você pode denunciar de três formas:<br>1. <strong>Ligue 180</strong> (Central da Mulher)<br>2. <strong>Registre um BO online</strong> no site da Polícia Civil<br>3. <strong>Procure uma DEAM</strong> (Delegacia da Mulher)",
-            "abrigo": "Abrigos disponíveis:<br><br>1. <strong>Casa Abrigo Sigilosa</strong><br>- Contato via 180 ou 190<br><br>2. <strong>Casa da Mulher Pernambucana</strong><br>- Endereço: Rua Real da Torre, 299<br>- Telefone: (81) 3184-3450",
-            "medida protetiva": "Para conseguir uma <strong>medida protetiva</strong>:<br>1. Registre um BO em qualquer delegacia<br>2. Solicite a medida ao delegado<br>3. Leve documentos (RG, comprovante de residência)<br><br><em>Em caso de descumprimento, ligue 190 imediatamente!</em>",
-            "default": "Digite:<br><strong>'denúncia'</strong> - Para como denunciar<br><strong>'abrigo'</strong> - Lista de abrigos seguros<br><strong>'medida protetiva'</strong> - Informações sobre medidas protetivas"
+            "denúncia": "Você pode denunciar de três formas:<br>1. <strong>Ligue 180</strong><br>2. <strong>Registre um BO online</strong><br>3. <strong>Procure uma DEAM</strong>",
+            "abrigo": "Abrigos disponíveis:<br>Casa Abrigo Sigilosa, Casa da Mulher Pernambucana",
+            "medida protetiva": "Para conseguir uma medida protetiva:<br>1. Registre um BO<br>2. Solicite ao delegado<br>3. Leve documentos",
+            "default": "Digite: 'denúncia', 'abrigo' ou 'medida protetiva'"
         };
 
         chatbotToggle?.addEventListener('click', () => {
             chatbotContainer.style.display = chatbotContainer.style.display === 'flex' ? 'none' : 'flex';
             if (chatbotContainer.style.display === 'flex') {
-                addBotMessage("Olá! Sou a assistente do Salve Maria. Como posso ajudar? Digite: 'abrigo', 'medida protetiva' ou 'denúncia'");
+                addBotMessage("Olá! Sou a assistente do Salve Maria. Como posso ajudar?");
             }
         });
 
@@ -262,13 +298,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const userText = chatbotInput.value.toLowerCase();
                 addUserMessage(userText);
                 chatbotInput.value = '';
-                
                 setTimeout(() => {
                     let reply = responses.default;
                     if (userText.includes('denúncia') || userText.includes('denuncia')) reply = responses["denúncia"];
                     if (userText.includes('abrigo')) reply = responses["abrigo"];
                     if (userText.includes('medida')) reply = responses["medida protetiva"];
-                    
                     addBotMessage(reply);
                 }, 500);
             }
