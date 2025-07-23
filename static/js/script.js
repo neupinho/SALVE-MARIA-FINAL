@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const shelters = [
-        { coords: [-8.0489691, -34.942389], title: 'Abrigo casa de isabel', description: 'Atende meninas e mulheres em situação de vulnerabilidade' },
-        { coords: [-8.063549, -34.8904319], title: 'Abrigo casa menina mulher', description: 'Atende meninas e mulheres em situação de vulnerabilidade' },
-        { coords: [-8.0924377, -34.9321112], title: 'SER- Centro de Referência Clarice Lispector', description: 'Atende meninas e mulheres em situação de vulnerabilidade' }
+        { coords: [-8.0489691, -34.942389], title: 'Abrigo casa de isabel', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/9ox4zGSZssBqBxpH8' },
+        { coords: [-8.063549, -34.8904319], title: 'Abrigo casa menina mulher', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/ygHEDVzcBLiRYTtA9' },
+        { coords: [-8.0924377, -34.9321112], title: 'SER- Centro de Referência Clarice Lispector', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/G7CYsLGQ8zoAy1N48' }
     ];
 
     shelters.forEach(shelter => {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 html: `<div style="background:${markerColors.seguro}; width:24px; height:24px; border-radius:50%; border:3px solid white;"></div>`,
                 iconSize: [24,24]
             })
-        }).addTo(map).bindPopup(`<b>${shelter.title}</b><br>${shelter.description}`);
+        }).addTo(map).bindPopup(`<b>${shelter.title}</b><br>${shelter.description} <br> <a href="${shelter.link}" target="_blank">Link para o abrigo</a>,`);
     });
 
     function loadAllReports() {
