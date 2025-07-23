@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrigos - Salve Maria Recife</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" style="height: 10vh" alt="Logo Salve Maria Recife">
+        </div>
+        <div class="slogan">Juntas somos mais fortes</div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Mapa Seguro</a></li>
+            <li><a href="{{ url_for('index') }}#depoimentos">Depoimentos</a></li>
+            <li><a href="{{ url_for('index') }}#emergencia">Ajuda Emergencial</a></li>
+            <li><a href="{{ url_for('informacoes') }}" class="active">Informações</a></li>
+        </ul>
+    </nav>
+
+    <main class="section-container">
+        <h2>Abrigos Seguros na Região Metropolitana do Recife</h2>
+        
+        <div class="abrigos-list">
+            <div class="abrigo-card">
+                <h3>Casa da Mulher Pernambucana</h3>
+                <p><strong>Endereço:</strong> Rua Real da Torre, 299, Recife</p>
+                <p><strong>Telefone:</strong> (81) 3184-3450</p>
+                <p><strong>Funcionamento:</strong> 24 horas</p>
+                <p><strong>Serviços oferecidos:</strong> Acolhimento emergencial, atendimento psicológico e jurídico</p>
+            </div>
+            <br>
+            <div class="abrigo-card">
+                <h3> Casa de Isabel</h3>
+                <p><strong>Endereço: </strong>Rua Cônego Luiz Gonzaga do Monte, 122 - Engenho do Meio, Recife - PE, 50670-620</p>
+                <p><strong>Contato: </strong>081988612868</p>
+                <p><strong>Serviços oferecidos:</strong> Acolhimento temporário para mulheres em risco iminente</p>
+            </div>
+            <br>
+            <div class="abrigo-card">
+                <h3> Casa Menina Mulher</h3>
+                <p><strong>Endereço:</strong> R. Leão Coroado, 55 - Boa Vista, Recife - PE, 50060-250</p>
+                <p><strong>Telefone:</strong> 08132310463</p>
+                <p><strong>Funcionamento:</strong> 24 horas</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Salve Maria Recife - Todos os direitos reservados</p>
+            <p>Contato: salvemaria2025@gmail.com</p>
+        </div>
+    </footer>
+</body>
+</html>

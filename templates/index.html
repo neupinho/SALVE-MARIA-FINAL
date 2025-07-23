@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#e74c3c">
+    <title>Salve Maria Recife - Rede de Apoio e Segurança para Mulheres</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.js"></script>
+</head>
+<body>
+    
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" style="height: 10vh"></img>
+        </div>
+        <div class="slogan">Juntas somos mais fortes</div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Mapa Seguro</a></li>
+            <li><a href="{{ url_for('index') }}#depoimentos">Depoimentos</a></li>
+            <li><a href="{{ url_for('index') }}#emergencia">Ajuda Emergencial</a></li>
+            <li><a href="{{ url_for('informacoes') }}" class="active">Informações</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="hero">
+            <div class="hero-content">
+                <div class="hero-content">
+                    <h1>Você não está sozinha</h1>
+                    <p>Denuncie pontos de risco e encontre apoio na Região Metropolitana do Recife</p>
+                    <button class="cta-button">Marcar local perigoso</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="mapa" class="section-container">
+            <h2>Mapa Colaborativo</h2>
+            <div class="address-search">
+                <input type="text" id="address-input" placeholder="Digite um endereço: (nome da rua - bairro) ou CEP ">
+                <button id="search-btn">Buscar</button>
+            </div>
+            <div class="map-legend">
+                <div class="legend-item"><span class="legend-color danger"></span> Alto Risco</div>
+                <div class="legend-item"><span class="legend-color warning"></span> Cuidado</div>
+                <div class="legend-item"><span class="legend-color safe"></span> Abrigos</div>
+            </div>
+            <div id="mapid" style="height: 500px; border-radius: 8px; border: 1px solid #ddd;"></div>
+        </section>
+
+        <section id="dicas" class="section-container">
+            <h2>Conselhos de Segurança</h2>
+            <div class="dicas-grid">
+                <!-- Cartão 1 -->
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Ônibus</h3>
+                    <ul>
+                        <li>Sente-se perto do motorista</li>
+                        <li>Evite usar fones nos dois ouvidos</li>
+                        <li>Desça em pontos movimentados</li>
+                        <li>Denuncie assédio pelo 180</li>
+                    </ul>
+                </div>
+                
+                <!-- Cartão 2 -->
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Pedestres</h3>
+                    <ul>
+                        <li>Ande por rotas iluminadas</li>
+                        <li>Evite atalhos por vielas</li>
+                        <li>Tenha seu celular carregado</li>
+                        <li>Compartilhe sua rota com alguém</li>
+                    </ul>
+                </div>
+                
+                <!-- Cartão 3 -->
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Emergências</h3>
+                    <ul>
+                        <li>Polícia Militar: <strong>190</strong></li>
+                        <li>Disque Denúncia: <strong>181</strong></li>
+                        <li>Central de Atendimento à Mulher: <strong>180</strong></li>
+                        <li>Samu: <strong>192</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="depoimentos" class="section-container">
+            <h2>Histórias de Superação</h2>
+            <div class="testimonials">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "Consegui sair do meu relacionamento abusivo com ajuda das mulheres desse projeto."
+                    </div>
+                    <div class="testimonial-author">- Ana, 28 anos, Jaboatão</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "Aprendi rotas seguras para voltar do trabalho à noite graças ao mapa colaborativo."
+                    </div>
+                    <div class="testimonial-author">- Carla, 22 anos, Recife</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="emergencia" class="emergency-section">
+            <h2>Precisa de ajuda agora?</h2>
+            <div class="emergency-buttons">
+                <button id="emergency-btn" class="emergency-btn">Botão de Emergência</button>
+                <button id="police-btn" class="secondary-btn">Ligar para Polícia</button>
+                <button id="shelter-btn" class="secondary-btn">Abrigos Próximos</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Salve Maria Recife - Todos os direitos reservados</p>
+            <p>Contato: salvemaria2025@gmail.com</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+
+    <div id="chatbot-container">
+        <div id="chatbot-header">
+            <span>Assistente Virtual</span>
+            <button id="chatbot-close">X</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Digite sua dúvida...">
+    </div>
+    <button id="chatbot-toggle">Precisa de ajuda?</button>
+</body>
+</html>

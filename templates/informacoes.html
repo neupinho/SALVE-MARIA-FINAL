@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre o Projeto - Salve Maria Recife</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/logo.jpg') }}" style="height: 10vh" alt="Logo Salve Maria">
+        </div>
+        <div class="slogan">Juntas somos mais fortes</div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Mapa Seguro</a></li>
+            <li><a href="{{ url_for('index') }}#depoimentos">Depoimentos</a></li>
+            <li><a href="{{ url_for('index') }}#emergencia">Ajuda Emergencial</a></li>
+            <li><a href="{{ url_for('informacoes') }}" class="active">Informações</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="hero-sobre" class="hero">
+            <div class="hero-content">
+                <h1 class="info-top">Conheça o Salve Maria Recife</h1>
+                <p class="info-top">Uma rede de proteção criada por e para mulheres</p>
+            </div>
+        </section>
+
+        <section id="sobre" class="section-container">
+            <h2>Sobre o Projeto</h2>
+            <div class="dicas-grid">
+                
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Origem</h3>
+                    <p>Nosso projeto nasceu quando Ana, 22 anos, perdeu o estágio porque não tinha como provar o assédio constante no ônibus joana-bezerra/pelopidas. Como ela, milhares precisam de uma solução *rápida, prática e coletiva."</p>
+                </div>
+                
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Quem Faz</h3>
+                    <p>Equipe J³: <br> Ana Júlia Assis <br> Júlia Aquino <br> João Cosmo</p>
+                </div>
+                
+                <div class="dica-card">
+                    <h3><span class="icon"></span> Objetivo</h3>
+                    <p>Mapear 100% dos pontos de risco na RMR até 2030.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="estatisticas" class="section-container" style="background: #f9f9f9;">
+            <h2>Impacto Social</h2>
+            <div class="dicas-grid">
+                <div class="dica-card">
+                    <h3><span class="icon">📍</span> 1.428</h3>
+                    <p>Locais mapeados</p>
+                </div>
+                <div class="dica-card">
+                    <h3><span class="icon">👩‍💻</span> 2.300+</h3>
+                    <p>Usuárias ativas</p>
+                </div>
+                <div class="dica-card">
+                    <h3><span class="icon">✅</span> 73%</h3>
+                    <p>Relatam maior sensação de segurança</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ajuda" class="section-container">
+            <h2>Como Participar</h2>
+            <div class="dica-card" style="max-width: 800px; margin: 0 auto;">
+                <ul>
+                    <li><strong>Compartilhe</strong> o projeto com outras mulheres</li>
+                    <li><strong>Reporte</strong> locais de risco no mapa</li>
+                    <li><strong>Contribua</strong> com código no <a href="https://github.com/neupinho/SALVEMARIA" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 Salve Maria Recife - Todos os direitos reservados</p>
+            <p>Contato: salvemaria2025@gmail.com</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
