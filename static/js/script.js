@@ -21,9 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const shelters = [
-        { coords: [-8.0489691, -34.942389], title: 'Abrigo casa de isabel', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/9ox4zGSZssBqBxpH8' },
-        { coords: [-8.063549, -34.8904319], title: 'Abrigo casa menina mulher', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/ygHEDVzcBLiRYTtA9' },
-        { coords: [-8.0924377, -34.9321112], title: 'SER- Centro de Referência Clarice Lispector', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/G7CYsLGQ8zoAy1N48' }
+        { coords: [-8.0489691, -34.942389], title: 'Abrigo Casa de Isabel', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/9ox4zGSZssBqBxpH8' },
+        { coords: [-8.063549, -34.8904319], title: 'Abrigo Casa Menina Mulher', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/ygHEDVzcBLiRYTtA9' },
+        { coords: [-8.0924377, -34.9321112], title: 'SER- Centro de Referência Clarice Lispector', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/G7CYsLGQ8zoAy1N48' },
+        { coords: [-8.0246247, -34.9173637], title: 'Lar de maria', description: 'Atende meninas e mulheres em situação de vulnerabilidade', link: 'https://maps.app.goo.gl/G7CYsLGQ8zoAy1N48' }
     ];
 
     shelters.forEach(shelter => {

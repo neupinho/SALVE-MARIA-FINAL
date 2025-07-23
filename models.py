@@ -21,6 +21,5 @@ class Comment(db.Model):
     author    = db.Column(db.String(80), nullable=False)
     content   = db.Column(db.Text,      nullable=False)
     timestamp = db.Column(db.DateTime,  server_default=db.func.now())
-
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report    = db.relationship('Report', back_populates='comments')
