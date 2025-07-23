@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Configuração inicial do mapa
     const map = L.map('mapid').setView([-8.0476, -34.8770], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Popup inicial com instruções
     L.popup()
         .setLatLng(map.getCenter())
         .setContent(`<div style="text-align:center;">
@@ -16,14 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
         .openOn(map);
     setTimeout(() => map.closePopup(), 16000);
 
-    // Paleta de cores para marcadores
     const markerColors = {
         'alto-risco': '#e74c3c',
         'cuidado': '#f39c12',
         'seguro': '#2ecc71'
     };
 
-    // Adicionar marcadores de abrigos
     const shelters = [
         {
             coords: [-8.0489691, -34.942389],
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }).addTo(map).bindPopup(`<b>${shelter.title}</b><br>${shelter.description}`);
     });
 
-    // Carregar relatórios existentes
     fetch("/api/reports")
         .then(response => response.json())
         .then(reports => {
@@ -68,24 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-    // Evento de busca por endereço
     document.getElementById('search-btn')?.addEventListener('click', handleAddressSearch);
 
-    // Evento de clique no mapa
     map.on('click', handleMapClick);
 
-    // Botões de emergência
     document.getElementById('emergency-btn')?.addEventListener('click', handleEmergency);
     document.getElementById('police-btn')?.addEventListener('click', handlePolice);
     document.getElementById('shelter-btn')?.addEventListener('click', handleShelter);
 
-    // Adicionar estilos customizados
     addCustomStyles();
 
-    // Inicializar chatbot
     initChatbot();
 
-    // Funções principais
     function handleAddressSearch() {
         const address = document.getElementById('address-input').value;
         if (!address) return;
